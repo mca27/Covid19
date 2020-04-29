@@ -1,0 +1,95 @@
+{% load static %}
+{% block head %}
+    <title>{% block title %}{{  case.state_name}}{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'ActiveCases/style.css' %}" />
+    <script type="text/javascript" src="{% static 'ActiveCases/My.js' %}"></script>
+
+{% endblock %}
+{% block body %}
+    <body onload="DisplayChart({{ case.active_cases }}, {{ case.recovered }},{{ case.deaths }})">
+        <nav class="navbar navbar-light bg-light shadow-lg mb-2 bg-white rounded">
+            <a href="{% url 'ActiveCases:index' %}">
+                <i class="fa fa-arrow-left navbar-brand" aria-hidden="true" ></i>
+            </a>
+            <a class="navbar-brand mx-auto"  href='{% url 'ActiveCases:detail' case.id %}'>{{ case.state_name }}</a>
+        </nav>
+        <div class="container-fluid" style="margin-top: 2px">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-sm-6" style="margin-right: -26px">
+                    <div class="container shadow-lg mb-2 bg-white rounded">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div class="container shadow-lg mb-2 bg-white rounded" style="margin-top:3px; padding: 1em;">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="row justify-content-center">
+                        <div class="col-md-3 col-sm-3">
+                            <div class="card text-dark shadow-lg mb-2 bg-white rounded" style="width: 195px;">
+                                  <div class="card-body">
+                                        <h5 class="card-title">{{case.confirmed_Cases}}</h5>
+                                        <p class="card-text">Confirmed</p>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="card shadow-lg mb-2 bg-white rounded" style="width: 195px;">
+                                  <div class="card-body text-primary">
+                                        <h5 class="card-title">{{case.active_cases}}</h5>
+                                        <p class="card-text">Active</p>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="card shadow-lg mb-2 bg-white rounded" style="width: 195px;">
+                                  <div class="card-body text-success">
+                                        <h5 class="card-title">{{case.recovered}}</h5>
+                                        <p class="card-text">Recovered</p>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="card shadow-lg mb-2 bg-white rounded" style="width: 11rem;">
+                                  <div class="card-body text-danger">
+                                        <h5 class="card-title">{{case.deaths}}</h5>
+                                        <p class="card-text">Deaths</p>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if case.districts_set.count != 0 %}
+                        {% for dist in case.districts_set.all %}
+                            <div class="card shadow-lg mb-2 bg-white rounded" style="margin-top: 1px;margin-right: -10px">
+                                <a href="{% url 'ActiveCases:detail' case.id %}" id="item-1" style="text-decoration: none;">
+                                <div class="card-header text-dark">
+                                    <blockquote class="blockquote mb-0 text-dark">
+                                        {{ dist.district_name  }}
+                                    </blockquote>
+                                </div>
+                                <div class="card-body">
+                                    <span class="text-dark" style="margin-right: 70px">Confirmed: {{ dist.confirmed_Cases }} </span>
+                                    <span class="text-primary" style="margin-right: 70px">Active: {{ dist.active_cases }}</span>
+                                    <span class="text-success" style="margin-right: 70px">Recovered: {{ dist.recovered }}</span>
+                                    <span class="text-danger" style="margin-right: 70px">Deaths: {{ dist.deaths }}</span>
+                                </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="card-header text-dark shadow-lg mb-2 bg-white rounded">
+                            <div class="card-body">
+                                 <h4 style="text-align: center">State wise data not found</h4>
+                            </div>
+
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock %}
+

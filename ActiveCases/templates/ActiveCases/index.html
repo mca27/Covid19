@@ -1,0 +1,81 @@
+{% extends 'ActiveCases/base.html' %}
+{% load static %}
+{% block head %}
+    <head>
+        <title>{% block title %} Active Cases {% endblock %}</title>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'ActiveCases/style.css' %}" />
+        <script type="text/javascript" src="{% static 'ActiveCases/My.js' %}"></script>
+    </head>
+{% endblock %}
+{% block content %}
+      <br/>
+<body onload="DisplayChart({{ active_cases.active_cases__sum }}, {{ recovered.recovered__sum }},{{ deaths.deaths__sum }})">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-6" style="margin-top: -22px;margin-right: -26px">
+                <div class="container shadow-lg mb-2 bg-white rounded" style="padding: 1em;">
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div class="container shadow-lg mb-2 bg-white rounded" style="margin-top:3px; padding: 1em;">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6" style="margin-top: -22px">
+                <div class="row justify-content-center">
+                    <div class="col-md-3 col-md-3">
+                        <div class="card shadow-lg mb-2 bg-white rounded" style="width: 196px;">
+                              <div class="card-body">
+                                    <h5 class="card-title">{{total_cases.confirmed_Cases__sum }}</h5>
+                                    <p class="card-text">Confirmed</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-lg mb-2 bg-white rounded" style="width: 196px;">
+                              <div class="card-body text-primary">
+                                    <h5 class="card-title">{{active_cases.active_cases__sum}}</h5>
+                                    <p class="card-text">Active</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-lg mb-2 bg-white rounded" style="width: 196px;">
+                              <div class="card-body text-success">
+                                    <h5 class="card-title">{{recovered.recovered__sum}}</h5>
+                                    <p class="card-text">Recovered</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-lg mb-2 bg-white rounded" style="width: 11rem;">
+                              <div class="card-body text-danger">
+                                    <h5 class="card-title">{{deaths.deaths__sum}}</h5>
+                                    <p class="card-text">Deaths</p>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                {% for cases in all_cases %}
+                    <div class="card shadow-lg mb-2 bg-white rounded" style="margin-top: 1px;margin-right: -10px">
+                        <a href="{% url 'ActiveCases:detail' cases.id %}" id="item-1" style="text-decoration: none;">
+                        <div class="card-header text-dark">
+                            <blockquote class="blockquote mb-0">
+                                {{ cases.state_name }}
+                            </blockquote>
+                        </div>
+                        <div class="card-body text-white">
+                            <span class="text-dark" style="margin-right: 70px">Confirmed: {{ cases.confirmed_Cases }} </span>
+                            <span class="text-primary" style="margin-right: 70px">Active: {{ cases.active_cases }}</span>
+                            <span class="text-success" style="margin-right: 70px">Recovered: {{ cases.recovered }}</span>
+                            <span class="text-danger" style="margin-right: 70px">Deaths: {{ cases.deaths }}</span>
+                        </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
